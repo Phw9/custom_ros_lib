@@ -6,6 +6,6 @@
 
 ## livox2pcd
 ```
-mkdir ~/workspace/data/pcd
-mkdir ~/workspace/data/timestamp
+mkdir -p ~/workspace/data/pcd
+mkdir -p ~/workspace/data/timestamp
 ```

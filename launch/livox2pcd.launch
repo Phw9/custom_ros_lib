@@ -1,0 +1,6 @@
+<launch>
+    <node name="livox_to_pcd_converter" type="livox2pcd" pkg="custom_ros_lib" output="screen" clear_params="true">
+        <!-- <rosparam command="load" file="$(find warpsense)/params/params.yaml"/> -->
+    </node>
+   
+</launch>

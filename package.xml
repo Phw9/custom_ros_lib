@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>customLib</name>
+  <name>custom_ros_lib</name>
   <version>0.0.0</version>
-  <description>The customLib package</description>
+  <description>The custom_ros_lib package</description>
 
   <maintainer email="phphww93@gmail.com">hwPark</maintainer>
 
-  <license>MIT</license>
+  <license> BSD licnese</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rodpy</build_depend>
@@ -15,6 +15,9 @@
   <build_export_depend>roscpp</build_export_depend>
   <exec_depend>rodpy</exec_depend>
   <exec_depend>roscpp</exec_depend>
+  <depend>sensor_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>pcl_ros</depend>
   <build_depend>livox_ros_driver2</build_depend>
   <exec_depend>livox_ros_driver2</exec_depend>
 

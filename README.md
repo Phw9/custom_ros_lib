@@ -2,7 +2,7 @@
 
 ## Install livox_ros_driver2 for mid360 LiDAR
 - [Livox SDK2](https://github.com/Livox-SDK/Livox-SDK2)
-- [Livox ros driver](https://github.com/Livox-SDK/livox_ros_driver2)
+- [Livox ros driver2](https://github.com/Livox-SDK/livox_ros_driver2)
 
 ## livox2pcd
 ```

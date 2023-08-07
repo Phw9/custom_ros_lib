@@ -11,7 +11,7 @@ mkdir -p ~/workspace/data/pcd && \
 mkdir -p ~/workspace/data/timestamp && \
 cd ~/workspace/src
 
-source /opt/${rosversion}/setup.sh
+source /opt/ros/${rosversion}/setup.sh
 catkin_init_workspace
 
 git clone https://github.com/Phw9/custom_ros_lib.git

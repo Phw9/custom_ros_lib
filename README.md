@@ -9,8 +9,8 @@
 mkdir -p ~/workspace/src && \
 mkdir -p ~/workspace/data/pcd && \
 mkdir -p ~/workspace/data/timestamp && \
-
 cd ~/workspace/src
+
 source /opt/${rosversion}/setup.sh
 catkin_init_workspace
 

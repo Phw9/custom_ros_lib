@@ -5,21 +5,27 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
+#include <sensor_msgs/Imu.h>
 #include <iomanip>
 
 class Converter {
 public:
     Converter() {
-        sub_ = nh_.subscribe("/livox/lidar", 10000, &Converter::callback, this);
+        lidar_sub_ = nh_.subscribe("/livox/lidar", 10000, &Converter::LiDARCallBack, this);
+        imu_sub_ = nh_.subscribe("/livox/imu", 10000, &Converter::ImuCallBack, this);
         count_ = 0;
-        timestamp_file_.open("/root/workspace/data/timestamp/timestamp.txt", std::ofstream::out);
+        ros::param::param<std::string>("/livox_to_pcd_converter/save_dir", save_dir_, "/data/lg22/custom_data");
+    
+        timestamp_file_.open(save_dir_ + "/timestamp/timestamp.txt", std::ofstream::out);
+        imu_file_.open(save_dir_ + "/imu/imu.txt", std::ofstream::out);
+        first_imu_data_received_ = false;
     }
     ~Converter() {
         timestamp_file_.close();
     }
 
 
-    void callback(const livox_ros_driver2::CustomMsg::ConstPtr& msg) {
+    void LiDARCallBack(const livox_ros_driver2::CustomMsg::ConstPtr& msg) {
         sensor_msgs::PointCloud2 pc2;
         pc2.header = msg->header;
 
@@ -51,10 +57,23 @@ public:
         ROS_INFO("Save %d.pcd file. Time : %f", count_, msg->header.stamp.toSec());
     }
 
+    void ImuCallBack(const sensor_msgs::Imu::ConstPtr& imu_msg) {
+    // Check if this is the first IMU data
+    if (!first_imu_data_received_) {
+        // Write headers
+        imu_file_ << "Timestamp ang_vel.x ang_vel.y ang_vel.z lin_acc.x lin_accn.y lin_acc.z" << std::endl;
+        first_imu_data_received_ = true;
+    }
+
+        // Extract IMU data and save to the text file
+        imu_file_ << imu_msg->header.stamp << " ";
+        imu_file_ << imu_msg->angular_velocity.x << " " << imu_msg->angular_velocity.y << " " << imu_msg->angular_velocity.z << " ";
+        imu_file_ << imu_msg->linear_acceleration.x << " " << imu_msg->linear_acceleration.y << " " << imu_msg->linear_acceleration.z << std::endl;
+    }
 
     std::string generateFileName() {
         std::ostringstream ss;
-        std::string pcdDir = "/root/workspace/data/pcd/";
+        std::string pcdDir = save_dir_ + "/pcd/";
         ss << pcdDir << std::setw(5) << std::setfill('0') << count_ << ".pcd";
         return ss.str();
     }
@@ -65,9 +84,13 @@ public:
 
 private:
     ros::NodeHandle nh_;
-    ros::Subscriber sub_;
+    ros::Subscriber lidar_sub_;
+    ros::Subscriber imu_sub_;
     int count_;
     std::ofstream timestamp_file_;
+    std::ofstream imu_file_;
+    bool first_imu_data_received_;
+    std::string save_dir_;
 };
 
 int main(int argc, char** argv) {

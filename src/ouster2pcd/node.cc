@@ -1,5 +1,4 @@
 #include <ros/ros.h>
-#include <livox_ros_driver2/CustomMsg.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_cloud.h>
@@ -11,9 +10,9 @@
 class Converter {
 public:
     Converter() {
-        ros::param::param<std::string>("/livox_to_pcd_converter/save_dir", save_dir_, "/data/lg22/custom_data");
-        ros::param::param<std::string>("/livox_to_pcd_converter/lidar_topic", lidar_topic_, "/livox/lidar");
-        ros::param::param<std::string>("/livox_to_pcd_converter/imu_topic", imu_topic_, "/livox/imu");    
+        ros::param::param<std::string>("/ouster_to_pcd_converter/save_dir", save_dir_, "/data/lg22/custom_data");
+        ros::param::param<std::string>("/ouster_to_pcd_converter/lidar_topic", lidar_topic_, "/os0_cloud_node/points");
+        ros::param::param<std::string>("/ouster_to_pcd_converter/imu_topic", imu_topic_, "/os0_cloud_node/imu");
         lidar_sub_ = nh_.subscribe(lidar_topic_, 10000, &Converter::LiDARCallBack, this);
         imu_sub_ = nh_.subscribe(imu_topic_, 10000, &Converter::ImuCallBack, this);
         count_ = 0;
@@ -26,38 +25,22 @@ public:
     }
 
 
-    void LiDARCallBack(const livox_ros_driver2::CustomMsg::ConstPtr& msg) {
-        sensor_msgs::PointCloud2 pc2;
-        pc2.header = msg->header;
+    void LiDARCallBack(const sensor_msgs::PointCloud2::ConstPtr& msg) {
+    pcl::PointCloud<pcl::PointXYZ> pcl_cloud;
+    pcl::fromROSMsg(*msg, pcl_cloud);
 
-        pcl::PointCloud<pcl::PointXYZ> pcl_cloud;
-        
-        // Assuming your CustomMsg contains an array of points with x, y, z
-        pcl_cloud.reserve(msg->points.size());
-        for (const auto& pt : msg->points) {
-            pcl::PointXYZ point;
-            point.x = pt.x;
-            point.y = pt.y;
-            point.z = pt.z;
-            pcl_cloud.points.push_back(point);
-        }
-        
-        pcl_cloud.width = pcl_cloud.points.size(); // Set the width to the number of points
-        pcl_cloud.height = 1; // Unorganized point cloud
-        
-        pcl::toROSMsg(pcl_cloud, pc2);
+    // Save to PCD
+    std::string pcd_filename = generateFileName();
+    pcl::io::savePCDFileASCII(pcd_filename, pcl_cloud);
 
-        // Save to PCD
-        std::string pcd_filename = generateFileName();
-        pcl::io::savePCDFileASCII(pcd_filename, pcl_cloud);
-        
-        // Save timestamp
-        saveTimestamp(pcd_filename, msg->header.stamp);
+    // Save timestamp
+    saveTimestamp(pcd_filename, msg->header.stamp);
 
-        count_++;
-        ROS_INFO("Save %d.pcd file. Time : %f", count_, msg->header.stamp.toSec());
+    count_++;
+    ROS_INFO("Save %d.pcd file. Time : %f", count_, msg->header.stamp.toSec());
     }
 
+    
     void ImuCallBack(const sensor_msgs::Imu::ConstPtr& imu_msg) {
     // Check if this is the first IMU data
     if (!first_imu_data_received_) {
@@ -97,7 +80,7 @@ private:
 };
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "livox_to_pcd_converter");
+    ros::init(argc, argv, "ouster_to_pcd_converter");
     Converter converter;
     
     ros::spin();

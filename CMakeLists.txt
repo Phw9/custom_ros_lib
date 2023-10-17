@@ -37,3 +37,9 @@ file(GLOB LIVOX2PCD_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/livox2pcd/*.cc")
 add_executable(livox2pcd ${LIVOX2PCD_SOURCES})
 target_include_directories(livox2pcd PRIVATE include/livox2pcd ${catkin_INCLUDE_DIRS})
 target_link_libraries(livox2pcd PUBLIC ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+# ouster2pcd
+file(GLOB OUSTER2PCD_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/ouster2pcd/*.cc")
+add_executable(ouster2pcd ${OUSTER2PCD_SOURCES})
+target_include_directories(ouster2pcd PRIVATE include/ouster2pcd ${catkin_INCLUDE_DIRS})
+target_link_libraries(ouster2pcd PUBLIC ${catkin_LIBRARIES} ${PCL_LIBRARIES})

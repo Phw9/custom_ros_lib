@@ -1,0 +1,9 @@
+<launch>
+    <node name="ouster_to_pcd_converter" type="ouster2pcd" pkg="custom_ros_lib" output="screen" clear_params="true">
+        <!-- <rosparam command="load" file="$(find warpsense)/params/params.yaml"/> -->
+        <param name="save_dir" type="str" value="/data/lg22/custom_data/tiers_indoor06" />
+        <param name="lidar_topic" type="str" value="/os0_cloud_node/points" />
+        <param name="imu_topic" type="str" value="/os0_cloud_node/imu" />
+    </node>
+   
+</launch>

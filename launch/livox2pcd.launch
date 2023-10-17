@@ -2,6 +2,8 @@
     <node name="livox_to_pcd_converter" type="livox2pcd" pkg="custom_ros_lib" output="screen" clear_params="true">
         <!-- <rosparam command="load" file="$(find warpsense)/params/params.yaml"/> -->
         <param name="save_dir" type="str" value="/data/lg22/custom_data/8floor_single" />
+        <param name="lidar_topic" type="str" value="/livox/lidar" />
+        <param name="imu_topic" type="str" value="/livox/imu" />
     </node>
    
 </launch>

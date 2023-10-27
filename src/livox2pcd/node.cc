@@ -30,15 +30,17 @@ public:
         sensor_msgs::PointCloud2 pc2;
         pc2.header = msg->header;
 
-        pcl::PointCloud<pcl::PointXYZ> pcl_cloud;
+        pcl::PointCloud<pcl::PointXYZINormal> pcl_cloud;
         
         // Assuming your CustomMsg contains an array of points with x, y, z
         pcl_cloud.reserve(msg->points.size());
         for (const auto& pt : msg->points) {
-            pcl::PointXYZ point;
+            pcl::PointXYZINormal point;
             point.x = pt.x;
             point.y = pt.y;
             point.z = pt.z;
+            point.intensity = pt.reflectivity;
+            point.curvature = pt.offset_time / float(1000000);
             pcl_cloud.points.push_back(point);
         }
         

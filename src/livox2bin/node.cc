@@ -14,8 +14,8 @@ public:
         ros::param::param<std::string>("/livox_to_pcd_converter/save_dir", save_dir_, "/data/lg22/custom_data");
         ros::param::param<std::string>("/livox_to_pcd_converter/lidar_topic", lidar_topic_, "/livox/lidar");
         ros::param::param<std::string>("/livox_to_pcd_converter/imu_topic", imu_topic_, "/livox/imu");    
-        lidar_sub_ = nh_.subscribe(lidar_topic_, 10000, &Converter::LiDARCallBack, this);
-        // lidar_bin_sub_ = nh_.subscribe(lidar_topic_, 10000, &Converter::LiDARBinCallBack, this);
+        // lidar_sub_ = nh_.subscribe(lidar_topic_, 10000, &Converter::LiDARCallBack, this);
+        lidar_bin_sub_ = nh_.subscribe(lidar_topic_, 10000, &Converter::LiDARBinCallBack, this);
         imu_sub_ = nh_.subscribe(imu_topic_, 10000, &Converter::ImuCallBack, this);
         count_ = 0;
         timestamp_file_.open(save_dir_ + "/timestamp/timestamp.txt", std::ofstream::out);
